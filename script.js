@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'jsm/controls/OrbitControls.js';
+import { getStarfield } from './getStarfield.js';
+
 const h = innerHeight;
 const w = innerWidth;
 const scene = new THREE.Scene();
@@ -20,6 +22,10 @@ const material = new THREE.MeshStandardMaterial({
 const earthGroup = new THREE.Group();
 earthGroup.rotation.z = -23.4 * Math.PI / 180;
 scene.add(earthGroup);
+
+const stars = getStarfield();
+scene.add(stars);
+
 const earthMesh = new THREE.Mesh(geometry, material);
 earthGroup.add(earthMesh);
 
