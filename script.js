@@ -13,10 +13,10 @@ document.body.appendChild(renderer.domElement);
 const loader = new THREE.TextureLoader();
 
 new OrbitControls(camera, renderer.domElement);
-const geometry = new THREE.IcosahedronGeometry(1,12);
+const detail = 12;
+const geometry = new THREE.IcosahedronGeometry(1,detail);
 const material = new THREE.MeshStandardMaterial({
     map: loader.load('/00_earthmap1k.jpg'),
-    flatShading: true,
 })
 
 const earthGroup = new THREE.Group();
@@ -29,12 +29,30 @@ scene.add(stars);
 const earthMesh = new THREE.Mesh(geometry, material);
 earthGroup.add(earthMesh);
 
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-scene.add(hemiLight);
+const lightMat = new THREE.MeshStandardMaterial({
+    map: loader.load('/03_earthlights1k.jpg'),
+    blending: THREE.AdditiveBlending,
+})
+const lightsMesh = new THREE.Mesh(geometry, lightMat);
+earthGroup.add(lightsMesh);
+
+const cloudMat = new THREE.MeshStandardMaterial({
+    map: loader.load('/05_earthcloudmaptrans.jpg'),
+    blending: THREE.AdditiveBlending,
+})
+const cloudMesh = new THREE.Mesh(geometry, cloudMat);
+cloudMesh.scale.setScalar(1.003);
+earthGroup.add(cloudMesh);
+
+const sunLight = new THREE.DirectionalLight(0xffffff);
+sunLight.position.set(-2,0.5,1.5);
+scene.add(sunLight);
 
 function animate(){
     requestAnimationFrame(animate);
     earthMesh.rotation.y += 0.002;
+    cloudMesh.rotation.y += 0.002;  
+    lightsMesh.rotation.y += 0.002;
     renderer.render(scene, camera);
 }
 
